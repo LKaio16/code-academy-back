@@ -11,4 +11,6 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END FROM Aluno a WHERE a.matricula = :matricula")
     boolean verificaMatricula(@Param("matricula") int matricula);
 
+    @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END FROM Aluno a WHERE a.email = :email")
+    boolean verificaEmail(@Param("email") String email);
 }

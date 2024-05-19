@@ -19,9 +19,13 @@ public class AlunoControler {
     private AlunoService alunoService;
 
     @PostMapping("/salvar")
-    public ResponseEntity<Aluno> salvarAluno(@RequestBody Aluno aluno){
-        Aluno alunoSalvo = alunoService.salvarAluno(aluno);
-        return ResponseEntity.status(HttpStatus.CREATED).body(alunoSalvo);
+    public ResponseEntity<?> salvarAluno(@RequestBody Aluno aluno) {
+        try {
+            Aluno alunoSalvo = alunoService.salvarAluno(aluno);
+            return ResponseEntity.status(HttpStatus.CREATED).body(alunoSalvo);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
     @GetMapping

@@ -15,6 +15,8 @@ import java.util.Optional;
 public class ProfessorService {
     @Autowired
     private ProfessorRepository professorRepository;
+    @Autowired
+    private AlunoRepository alunoRepository;
 
     private int gerarMatriculaUnica() {
         int matricula;
@@ -24,7 +26,10 @@ public class ProfessorService {
         return matricula;
     }
 
-    public Professor salvarProfessor(Professor professor){
+    public Professor salvarProfessor(Professor professor) {
+        if (professorRepository.verificaEmail(professor.getEmail()) || alunoRepository.verificaEmail(professor.getEmail())) {
+            throw new RuntimeException("Email já cadastrado!");
+        }
         professor.setMatricula(gerarMatriculaUnica());
         return professorRepository.save(professor);
     }

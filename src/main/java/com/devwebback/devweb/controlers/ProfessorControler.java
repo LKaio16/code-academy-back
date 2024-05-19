@@ -20,9 +20,13 @@ public class ProfessorControler {
     private ProfessorService professorService;
 
     @PostMapping("/salvar")
-    public ResponseEntity<Professor> salvarProfessor(@RequestBody Professor professor){
-        Professor professorSalvo = professorService.salvarProfessor(professor);
-        return ResponseEntity.status(HttpStatus.CREATED).body(professorSalvo);
+    public ResponseEntity<?> salvarProfessor(@RequestBody Professor professor){
+        try {
+            Professor professorSalvo = professorService.salvarProfessor(professor);
+            return ResponseEntity.status(HttpStatus.CREATED).body(professorSalvo);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
     @GetMapping

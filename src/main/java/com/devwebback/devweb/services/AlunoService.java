@@ -2,6 +2,7 @@ package com.devwebback.devweb.services;
 
 import com.devwebback.devweb.model.Aluno;
 import com.devwebback.devweb.repositories.AlunoRepository;
+import com.devwebback.devweb.repositories.ProfessorRepository;
 import com.devwebback.devweb.util.GeradorMatricula;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ public class AlunoService {
 
     @Autowired
     private AlunoRepository alunoRepository;
+    @Autowired
+    private ProfessorRepository professorRepository;
 
     private int gerarMatriculaUnica() {
         int matricula;
@@ -24,6 +27,9 @@ public class AlunoService {
     }
 
     public Aluno salvarAluno(Aluno aluno) {
+        if (professorRepository.verificaEmail(aluno.getEmail()) || alunoRepository.verificaEmail(aluno.getEmail())) {
+            throw new RuntimeException("Email já cadastrado!");
+        }
         aluno.setMatricula(gerarMatriculaUnica());
         return alunoRepository.save(aluno);
     }
