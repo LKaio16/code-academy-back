@@ -6,6 +6,7 @@ import com.devwebback.devweb.repositories.AlunoRepository;
 import com.devwebback.devweb.repositories.ProfessorRepository;
 import com.devwebback.devweb.util.GeradorMatricula;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,8 @@ public class ProfessorService {
     private ProfessorRepository professorRepository;
     @Autowired
     private AlunoRepository alunoRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private int gerarMatriculaUnica() {
         int matricula;
@@ -30,6 +33,7 @@ public class ProfessorService {
         if (professorRepository.verificaEmail(professor.getEmail()) || alunoRepository.verificaEmail(professor.getEmail())) {
             throw new RuntimeException("Email já cadastrado!");
         }
+        professor.setSenha(passwordEncoder.encode(professor.getSenha()));
         professor.setMatricula(gerarMatriculaUnica());
         return professorRepository.save(professor);
     }
