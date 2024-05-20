@@ -1,8 +1,6 @@
-package com.devwebback.devweb.controlers;
+package com.devwebback.devweb.controllers;
 
-import com.devwebback.devweb.model.Aluno;
 import com.devwebback.devweb.model.Professor;
-import com.devwebback.devweb.services.AlunoService;
 import com.devwebback.devweb.services.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +13,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/professor")
 
-public class ProfessorControler {
+public class ProfessorController {
     @Autowired
     private ProfessorService professorService;
 

@@ -1,8 +1,7 @@
-package com.devwebback.devweb.controlers;
+package com.devwebback.devweb.controllers;
 
 import com.devwebback.devweb.model.Aluno;
 import com.devwebback.devweb.services.AlunoService;
-import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/aluno")
 
-public class AlunoControler {
+public class AlunoController {
     @Autowired
     private AlunoService alunoService;
 
