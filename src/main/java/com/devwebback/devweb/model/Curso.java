@@ -21,24 +21,21 @@ public class Curso {
     private Long id;
 
     @Column(nullable = false)
-    private String titulo;
-
-    @Column(nullable = false)
-    private int matricula;
-
-    @Column(nullable = false)
-    private String descricao;
+    private String nome;
 
     @Column
-    private String linkImg;
+    private String descricao;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "professor_id")
     private Professor professor;
 
-    @ManyToMany(mappedBy = "cursos")
-    private List<Aluno> alunos = new ArrayList<>();
-
     @OneToMany(mappedBy = "curso")
     private List<Aula> aulas = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "curso_alunos",
+            joinColumns = @JoinColumn(name = "curso_id"),
+            inverseJoinColumns = @JoinColumn(name = "aluno_id"))
+    private List<Aluno> alunos = new ArrayList<>();
 }
