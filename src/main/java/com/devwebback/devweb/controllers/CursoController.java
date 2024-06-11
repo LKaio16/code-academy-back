@@ -1,6 +1,8 @@
 package com.devwebback.devweb.controllers;
 
+import com.devwebback.devweb.dto.CursoDTO;
 import com.devwebback.devweb.model.Curso;
+import com.devwebback.devweb.model.Professor;
 import com.devwebback.devweb.services.CursoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/curso")
@@ -17,8 +20,15 @@ public class CursoController {
     private CursoService cursoService;
 
     @PostMapping("/salvar")
-    public ResponseEntity<?> salvarCurso(@RequestBody Curso curso) {
+    public ResponseEntity<?> salvarCurso(@RequestBody CursoDTO cursoDTO) {
         try {
+            Curso curso = new Curso();
+
+            curso.setNome(cursoDTO.getNome());
+            curso.setDescricao(cursoDTO.getDescricao());
+            curso.setLinkImg(cursoDTO.getLinkImg());
+            curso.setProfessor(Professor.builder().id(cursoDTO.getProfessorId()).build());
+
             Curso cursoSalvo = cursoService.saveCurso(curso);
             return ResponseEntity.status(HttpStatus.CREATED).body(cursoSalvo);
         } catch (RuntimeException ex) {
@@ -27,9 +37,16 @@ public class CursoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Curso>> listarTodosCursos() {
+    public ResponseEntity<List<CursoDTO>> listarTodosCursos() {
         List<Curso> cursos = cursoService.listarTodosCursos();
-        return ResponseEntity.ok(cursos);
+        List<CursoDTO> cursosDTO = cursos.stream().map(curso -> CursoDTO.builder()
+                .nome(curso.getNome())
+                .descricao(curso.getDescricao())
+                .linkImg(curso.getLinkImg())
+                .professorId(curso.getProfessor().getId())
+                .alunos(curso.getAlunos().stream().map(aluno -> aluno.getId()).collect(Collectors.toList()))
+                .build()).collect(Collectors.toList());
+        return ResponseEntity.ok(cursosDTO);
     }
 
     @GetMapping("/{id}")

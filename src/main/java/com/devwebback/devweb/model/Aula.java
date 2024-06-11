@@ -1,10 +1,7 @@
 package com.devwebback.devweb.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "aula")
@@ -12,6 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Aula {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +17,12 @@ public class Aula {
 
     @Column(nullable = false)
     private String titulo;
+
+    @Column(nullable = false)
+    private String url;
+
+    @Column
+    private String descricao;
 
     @ManyToOne
     @JoinColumn(name = "curso_id", nullable = false)
