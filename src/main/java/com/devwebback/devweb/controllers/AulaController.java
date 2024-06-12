@@ -51,6 +51,19 @@ public class AulaController {
         return ResponseEntity.ok(aulaDTOs);
     }
 
+    @PostMapping("/vista/{alunoId}/{aulaId}")
+    public ResponseEntity<Void> marcarAulaComoVista(@PathVariable Long alunoId, @PathVariable Long aulaId) {
+        aulaService.marcarAulaComoVista(alunoId, aulaId);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping("/vista/{alunoId}/{cursoId}")
+    public ResponseEntity<List<AulaDTO>> listarAulasVistasPorAlunoECurso(@PathVariable Long alunoId, @PathVariable Long cursoId) {
+        List<AulaDTO> aulasVistas = aulaService.listarAulasVistasPorAlunoECurso(alunoId, cursoId);
+        return ResponseEntity.ok(aulasVistas);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarAulaPorId(@PathVariable Long id) {
         boolean isDeleted = aulaService.deleteAulaById(id);
@@ -58,6 +71,21 @@ public class AulaController {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/editar/{id}")
+    public ResponseEntity<?> editarAula(@PathVariable Long id, @RequestBody AulaDTO aulaDTO) {
+        try {
+            Aula aula = new Aula();
+            aula.setTitulo(aulaDTO.getTitulo());
+            aula.setDescricao(aulaDTO.getDescricao());
+            aula.setUrl(aulaDTO.getUrl());
+
+            Aula aulaAtualizada = aulaService.updateAula(id, aula);
+            return ResponseEntity.ok(aulaAtualizada);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
 }

@@ -10,13 +10,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebMvc
 public class DevwebApplication implements WebMvcConfigurer {
     public static void main(String[] args) {
-
         SpringApplication.run(DevwebApplication.class, args);
     }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-
         registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
 }

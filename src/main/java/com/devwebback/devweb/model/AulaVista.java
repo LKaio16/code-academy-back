@@ -1,30 +1,25 @@
 package com.devwebback.devweb.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
-@Table(name = "aulas_vistas")
+@Table(name = "aula_vista")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class AulaVista {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "aluno_id")
-    private Aluno aluno;
-
-    @ManyToOne
-    @JoinColumn(name = "aula_id")
+    @JoinColumn(name = "aula_id", nullable = false)
     private Aula aula;
 
-    @Column(nullable = false)
-    private boolean concluida;
+    @ManyToOne
+    @JoinColumn(name = "aluno_id", nullable = false)
+    private Aluno aluno;
 }
