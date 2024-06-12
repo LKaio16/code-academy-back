@@ -1,6 +1,7 @@
 package com.devwebback.devweb.controllers;
 
 import com.devwebback.devweb.dto.CursoDTO;
+import com.devwebback.devweb.dto.ProfessorDTO;
 import com.devwebback.devweb.model.Curso;
 import com.devwebback.devweb.model.Professor;
 import com.devwebback.devweb.services.CursoService;
@@ -27,7 +28,7 @@ public class CursoController {
             curso.setNome(cursoDTO.getNome());
             curso.setDescricao(cursoDTO.getDescricao());
             curso.setLinkImg(cursoDTO.getLinkImg());
-            curso.setProfessor(Professor.builder().id(cursoDTO.getProfessorId()).build());
+            curso.setProfessor(Professor.builder().id(cursoDTO.getProfessor().getId()).build());
 
             Curso cursoSalvo = cursoService.saveCurso(curso);
             return ResponseEntity.status(HttpStatus.CREATED).body(cursoSalvo);
@@ -36,18 +37,61 @@ public class CursoController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<List<CursoDTO>> listarTodosCursos() {
-        List<Curso> cursos = cursoService.listarTodosCursos();
+    @GetMapping("/professor/{professorId}")
+    public ResponseEntity<List<CursoDTO>> listarCursosPorProfessorId(@PathVariable Long professorId) {
+        List<Curso> cursos = cursoService.encontrarCursosPorProfessorId(professorId);
         List<CursoDTO> cursosDTO = cursos.stream().map(curso -> CursoDTO.builder()
+                .id(curso.getId())
                 .nome(curso.getNome())
                 .descricao(curso.getDescricao())
                 .linkImg(curso.getLinkImg())
-                .professorId(curso.getProfessor().getId())
+                .professor(ProfessorDTO.builder()
+                        .id(curso.getProfessor().getId())
+                        .nome(curso.getProfessor().getNome())
+                        // outros campos relevantes
+                        .build())
                 .alunos(curso.getAlunos().stream().map(aluno -> aluno.getId()).collect(Collectors.toList()))
                 .build()).collect(Collectors.toList());
         return ResponseEntity.ok(cursosDTO);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizarCurso(@PathVariable Long id, @RequestBody CursoDTO cursoDTO) {
+        try {
+            Curso curso = new Curso();
+
+            curso.setId(id);
+            curso.setNome(cursoDTO.getNome());
+            curso.setDescricao(cursoDTO.getDescricao());
+            curso.setLinkImg(cursoDTO.getLinkImg());
+            curso.setProfessor(Professor.builder().id(cursoDTO.getProfessor().getId()).build());
+
+            Curso cursoAtualizado = cursoService.updateCurso(curso);
+            return ResponseEntity.ok(cursoAtualizado);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<CursoDTO>> listarTodosCursos() {
+        List<Curso> cursos = cursoService.listarTodosCursos();
+        List<CursoDTO> cursosDTO = cursos.stream().map(curso -> CursoDTO.builder()
+                .id(curso.getId())
+                .nome(curso.getNome())
+                .descricao(curso.getDescricao())
+                .linkImg(curso.getLinkImg())
+                .professor(ProfessorDTO.builder()
+                        .id(curso.getProfessor().getId())
+                        .nome(curso.getProfessor().getNome())
+                        // outros campos relevantes
+                        .build())
+                .alunos(curso.getAlunos().stream().map(aluno -> aluno.getId()).collect(Collectors.toList()))
+                .build()).collect(Collectors.toList());
+        return ResponseEntity.ok(cursosDTO);
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Curso> encontrarCursoPorId(@PathVariable Long id) {

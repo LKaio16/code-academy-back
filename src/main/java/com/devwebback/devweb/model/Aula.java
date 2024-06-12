@@ -18,7 +18,7 @@ public class Aula {
     @Column(nullable = false)
     private String titulo;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String url;
 
     @Column

@@ -1,6 +1,6 @@
 package com.devwebback.devweb.dto;
-import lombok.*;
 
+import lombok.*;
 import java.util.List;
 
 @Getter
@@ -9,9 +9,10 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class CursoDTO {
+    private long id;
     private String nome;
     private String descricao;
     private String linkImg;
-    private long professorId;
+    private ProfessorDTO professor;
     private List<Long> alunos;
 }

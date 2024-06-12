@@ -24,7 +24,7 @@ public class Curso {
     @Column
     private String descricao;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String linkImg;
 
     @ManyToOne

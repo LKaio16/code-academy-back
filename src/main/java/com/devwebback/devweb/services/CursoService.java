@@ -1,9 +1,13 @@
 package com.devwebback.devweb.services;
 
 import com.devwebback.devweb.model.Aluno;
+import com.devwebback.devweb.model.Aula;
 import com.devwebback.devweb.model.Curso;
 import com.devwebback.devweb.repositories.AlunoRepository;
+import com.devwebback.devweb.repositories.AulaRepository;
+import com.devwebback.devweb.repositories.AulaVistaRepository;
 import com.devwebback.devweb.repositories.CursoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,30 +22,58 @@ public class CursoService {
     @Autowired
     private AlunoRepository alunoRepository;
 
-    // Salva ou atualiza um curso
+    @Autowired
+    private AulaVistaRepository aulaVistaRepository;
+
+    @Autowired
+    private AulaRepository aulaRepository;
+
     public Curso saveCurso(Curso curso) {
         return cursoRepository.save(curso);
     }
 
-    // Lista todos os cursos
     public List<Curso> listarTodosCursos() {
         return cursoRepository.findAll();
     }
 
-    // Encontra um curso por ID
     public Optional<Curso> encontrarCursoPorId(Long id) {
         return cursoRepository.findById(id);
     }
 
-    // Deleta um curso por ID
+    @Transactional
     public boolean deletarCursoPorId(Long id) {
+        List<Aula> aulas = aulaRepository.findByCursoId(id);
+        for (Aula aula : aulas) {
+            // Deletar todas as entradas de AulaVista associadas à aula
+            aulaVistaRepository.deleteByAula(aula);
+            aulaRepository.deleteById(aula.getId());
+        }
         Optional<Curso> cursoExistente = cursoRepository.findById(id);
+        Curso curso = cursoExistente.get();
+        curso.setAlunos(null);
+        cursoRepository.save(curso);
         if (cursoExistente.isPresent()) {
             cursoRepository.deleteById(id);
             return true;
         } else {
             return false;
         }
+    }
+
+    public List<Curso> encontrarCursosPorProfessorId(Long professorId) {
+        return cursoRepository.findByProfessorId(professorId);
+    }
+
+    public Curso updateCurso(Curso curso) {
+        Curso cursoExistente = cursoRepository.findById(curso.getId())
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+
+        cursoExistente.setNome(curso.getNome());
+        cursoExistente.setDescricao(curso.getDescricao());
+        cursoExistente.setLinkImg(curso.getLinkImg());
+        cursoExistente.setProfessor(curso.getProfessor());
+
+        return cursoRepository.save(cursoExistente);
     }
 
     public Curso adicionarAlunoAoCurso(Long cursoId, Long alunoId) {

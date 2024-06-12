@@ -11,6 +11,7 @@ public class AulaDTO {
     private Long id;
     private String titulo;
     private String url;
+    private boolean aulaVista;
     private String descricao;
     private long cursoId;
 }
